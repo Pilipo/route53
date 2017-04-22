@@ -1,5 +1,5 @@
 # route53
-Dynamically updates route53 A records to point to your home IP.
+Dynamically updates route53 A records to point to your home IP based on a scheduled cron job.
 
 ## Setup
 
@@ -17,4 +17,4 @@ Dynamically updates route53 A records to point to your home IP.
     + Inspect the ```.ip``` and ```.log``` files to verify success
 4. **Set the Cron**
     + Execute ```crontab -e``` 
-    + Add ```0       *       *       *       *       /home/pi/Scripts/route53/route53.sh``` to the end
+    + Add ```0       *       *       *       *       /home/pi/Scripts/route53/route53.sh``` to the end. (_this refreshes once an hour_)
