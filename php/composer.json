@@ -1,0 +1,14 @@
+{
+    "name": "plehner/holler",
+    "description": "Pi needs to holler sometimes.",
+    "require": {
+        "phpmailer/phpmailer": "^6.0",
+        "vlucas/phpdotenv": "^2.4"
+    },
+    "authors": [
+        {
+            "name": "Pilipo",
+            "email": "pl@philliplehner.com"
+        }
+    ]
+}

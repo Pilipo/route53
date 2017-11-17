@@ -49,6 +49,8 @@ if grep -Fxq "$IP" "$IPFILE" && [ "$IP" = "$DNS_IP" ]; then
     exit 0
 else
     echo "$(date) :: IP has changed to $IP" >> "$LOGFILE"
+    php ./php/holler.php "Your home IP has changed to $IP. Don't worry though. I got it. ;)" "Home IP" 
+    
     # Fill a temp file with valid JSON
     TMPFILE=$(mktemp /tmp/temporary-file.XXXXXXXX)
     cat > ${TMPFILE} << EOF
