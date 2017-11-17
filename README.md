@@ -8,6 +8,7 @@ Dynamically updates route53 A records to point to your home IP based on a schedu
     + From command line, execute: ```apt install pip```
     + From command line, execute: ```pip install --upgrade --user awscli```
     + From command line, execute: ```aws configure``` (_You will need your ID, Key, and Region from AWS_)
+    + From command line, install the composer requirements in the ```php``` directory. (Note: this requires Composer) 
 2. **Copy and Configure ```config.sh```**
     + Copy ```sample.config.sh``` and rename to ```config.sh```
     + Update the ZONEID and RECORDSET variables in ```config.sh``` to your Route53 values
