@@ -4,6 +4,9 @@ source config.sh
 
 # Get the external IP address from OpenDNS (more reliable than other providers)
 IP=`dig +short myip.opendns.com @resolver1.opendns.com`
+DNS_IP=`dig +short $RECORDSET @resolver1.opendns.com`
+
+
 
 function valid_ip()
 {
@@ -39,9 +42,10 @@ if [ ! -f "$IPFILE" ]
     touch "$IPFILE"
 fi
 
-if grep -Fxq "$IP" "$IPFILE"; then
+if grep -Fxq "$IP" "$IPFILE" && [ "$IP" = "$DNS_IP" ]; then
     # code if found
-    echo "$(date) :: IP is still $IP. Exiting" >> "$LOGFILE"
+    echo "$(date) :: DNS and IP are still $IP. Exiting." >> "$LOGFILE"
+
     exit 0
 else
     echo "$(date) :: IP has changed to $IP" >> "$LOGFILE"
