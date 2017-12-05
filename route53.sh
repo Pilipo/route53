@@ -1,11 +1,5 @@
 #!/bin/bash
 
-source config.sh
-
-# Get the external IP address from OpenDNS (more reliable than other providers)
-IP=`dig +short myip.opendns.com @resolver1.opendns.com`
-DNS_IP=`dig +short $RECORDSET @resolver1.opendns.com`
-
 
 
 function valid_ip()
@@ -31,6 +25,12 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 LOGFILE="$DIR/update-route53.log"
 IPFILE="$DIR/update-route53.ip"
 
+source $DIR/config.sh
+
+# Get the external IP address from OpenDNS (more reliable than other providers)
+IP=`dig +short myip.opendns.com @resolver1.opendns.com`
+DNS_IP=`dig +short $RECORDSET @resolver1.opendns.com`
+
 if ! valid_ip $IP; then
     echo "$(date) :: Invalid IP address: $IP" >> "$LOGFILE"
     exit 1
@@ -44,12 +44,12 @@ fi
 
 if grep -Fxq "$IP" "$IPFILE" && [ "$IP" = "$DNS_IP" ]; then
     # code if found
-    echo "$(date) :: DNS and IP are still $IP. Exiting." >> "$LOGFILE"
+    echo "$(date) :: DNS and IP are still $IP." >> "$LOGFILE"
 
     exit 0
 else
     echo "$(date) :: IP has changed to $IP" >> "$LOGFILE"
-    php ./php/holler.php "Your home IP has changed to $IP. Don't worry though. I got it. ;)" "Home IP" 
+    /usr/bin/php $DIR/php/holler.php "Your home IP has changed to $IP. Don't worry though. I got it. ;)" "Home IP" 
     
     # Fill a temp file with valid JSON
     TMPFILE=$(mktemp /tmp/temporary-file.XXXXXXXX)
@@ -75,10 +75,10 @@ else
 EOF
 
     # Update the Hosted Zone record
-    aws route53 change-resource-record-sets \
+    /usr/local/bin/aws route53 change-resource-record-sets \
         --hosted-zone-id $ZONEID \
         --change-batch file://"$TMPFILE" >> "$LOGFILE"
-    echo "" >> "$LOGFILE"
+    #echo "" >> "$LOGFILE"
 
     # Clean up
     rm $TMPFILE
