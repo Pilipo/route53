@@ -12,6 +12,8 @@ Dynamically updates route53 A records to point to your home IP based on a schedu
 2. **Copy and Configure ```config.sh```**
     + Copy ```sample.config.sh``` and rename to ```config.sh```
     + Update the ZONEID and RECORDSET variables in ```config.sh``` to your Route53 values
+    + Copy ```php/sample.env``` to ```php/.env```
+    + Update the environment variables in ```php/.env``` to match a gmail account for sending email (if these are not configured, the email will not attempt to send)
 3. **Test the Script**
     + Verify that ```route53.sh``` is executable 
     + Execute ```./route53.sh```
