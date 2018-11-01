@@ -38,7 +38,7 @@ function sendMail($message, $title='') {
     $mail->Port = 587;                                    // TCP port to connect to
 
     //Recipients
-    $mail->setFrom(getenv('EMAIL_USER'), 'server-name');
+    $mail->setFrom(getenv('EMAIL_USER'), getenv('SERVER_NAME'));
     $mail->addAddress(getenv('EMAIL_TO'), 'recipient name');     // Add a recipient
 
     //Content
