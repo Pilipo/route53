@@ -2,8 +2,8 @@
     "name": "plehner/holler",
     "description": "Pi needs to holler sometimes.",
     "require": {
-        "phpmailer/phpmailer": "^6.0",
-        "vlucas/phpdotenv": "^2.4"
+        "vlucas/phpdotenv": "^2.4",
+        "mailgun/mailgun-php": "^2.8"
     },
     "authors": [
         {

@@ -5,8 +5,7 @@ Dynamically updates route53 A records to point to your home IP based on a schedu
 
 1. **Setup AWS CLI Tools** ( _http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html_ )
     + Setup an AWS account and get Security Credentials
-    + From command line, execute: ```apt install pip```
-    + From command line, execute: ```pip install --upgrade --user awscli```
+    + From command line, execute: ```apt install awscli```
     + From command line, execute: ```aws configure``` (_You will need your ID, Key, and Region from AWS_)
     + From command line, install the composer requirements in the ```php``` directory. (Note: this requires Composer) 
 2. **Copy and Configure ```config.sh```**
