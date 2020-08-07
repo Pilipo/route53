@@ -1,7 +1,5 @@
 #!/bin/bash
 
-
-
 function valid_ip()
 {
     local  ip=$1
