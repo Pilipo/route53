@@ -5,7 +5,6 @@ use Mailgun\Mailgun;
 $dotenv = new Dotenv\Dotenv(__DIR__);
 $dotenv->load();
 
-// $mg = new Mailgun(getenv('MAILGUNKEY'));
 $mg = Mailgun::create(getenv('MAILGUNKEY'));
 $domain = getenv('DOMAIN');
 
