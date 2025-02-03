@@ -1,36 +1,28 @@
-from requests import get
-import ipaddress
+import route53tools
 
-def is_valid_ip(ip):
-    try:
-        ipaddress.ip_address(ip)
-        return True;
-    except ValueError:
-        return False;
+# Load and verify config
+route53tools.loadconfig()
 
-# Start logs and IP records
+# Load the cached IP
+cachedip = route53tools.cachedip.get()
 
 # Grab the external IP
-ip = get('https://api.ipify.org').content.decode('utf8')
-print("Hello world!")
-print('My public IP address is: {}'.format(ip))
+externalip = route53tools.externalip.get()
 
-# Check if the external IP is valid
-if is_valid_ip(ip):
-    print('IP is valid!')
+# Compare: mismatch assumes external IP has recently changed, so skip to update
+if externalip == cachedip:
+    
+    # Grab and compare the DNS IP
+    dnsip = route53tools.dnsip.get()
 
-    # Grab the IP provided by DNS
+    # match assumes no work to do, so bail out
+    if dnsip == externalip:
+        route53tools.logger.log("IPs all match. Exiting.")
+        exit()
 
-    # Check if IP has changed by comparing cached IP, current IP, and DNS record
+recordset = route53tools.updater.buildrecordset()
+status = True # route53tools.updater.upsertrecordset(recordset)
 
-    # NOT changed, log date and IP; ELSE continue
-
-    # Update route53 recordset 
-
-    # Log the change and send alert (email, text, whatever)
-
-    # Overwrite IP cache with new IP
-
-else:
-    # NOT valid, log result and bail out
-    print('IP is not valid! This will be logged')
+if status:
+    # Update cache after pushing recordset
+    route53tools.cachedip.update(externalip)

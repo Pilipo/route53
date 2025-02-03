@@ -1,8 +1,13 @@
+__pycache__/
+*.py[cod]
+*$py.class
+
 config.sh
-update-route53.ip
+*.ip
 update-route53.log
 .env
 **/vendor/
 /logs/*
+*.log
 !/logs/README.md
 config.ini
