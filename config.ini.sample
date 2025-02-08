@@ -1,0 +1,13 @@
+[DEFAULT]
+
+[ROUTE53]
+zoneid = 377H477D7FSDF879
+recordset = subdomain.example.com
+region = your-region
+
+[ADVANCED]
+dns_tool = https://api.ipify.org
+TTL = 300
+comment = "Auto updating zone"
+; Change to AAAA for IPv6
+TYPE = A
