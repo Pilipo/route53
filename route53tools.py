@@ -79,6 +79,29 @@ class notifier:
             return False
 
 class updater:
+    def update_pending():
+        import boto3
+        import os
+
+        if os.path.exists('change.pending'):
+            print('lock exists')
+            f = open('change.pending', 'r')
+            id = f.read()
+            f.close()
+
+            r53 = boto3.client('route53')
+            response = r53.get_change(
+                Id=id
+            )
+            logger.log('Change pending: ' + str(response))
+            if response['ChangeInfo']['Status'] == 'INSYNC':
+                print('change complete. deleting lock')
+                os.remove('change.pending')
+                return False
+            
+            print('change pending. leaving lock.')
+            return True
+    
     def update(newip):
         import boto3
 
@@ -118,6 +141,14 @@ class updater:
 
         # log the result
         logger.log(str(response))
+
+        if response['ChangeInfo']['Status'] == 'PENDING':
+            # set an update lock by creating a file
+            file = open('change.pending', 'a')
+            file.write(response['ChangeInfo']['Id'])
+            file.close()
+
+        cachedip.update(newip)
 
         # return the result
         return response
