@@ -2,6 +2,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+/aws/*
+aws*.zip
+
 config.sh
 *.ip
 update-route53.log

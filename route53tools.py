@@ -1,9 +1,8 @@
-import configparser
-
-global config 
-
 def loadconfig():
+    import configparser
+
     try:
+        global config 
         config = configparser.ConfigParser()
         config.read('config.ini')
     except ValueError:
@@ -28,6 +27,9 @@ class cachedip:
         
     def update(ip):
         try:
+            file = open('.ip', 'w')
+            file.write(ip)
+            file.close()
             logger.log('Cached new IP: ' + ip)
         except ValueError:
             return False
@@ -47,8 +49,10 @@ class dnsip:
     def get():
         import socket
 
+        hostname = config.get("ROUTE53","recordset")
+
         try:
-            ip = socket.gethostbyname('google.com')
+            ip = socket.gethostbyname(hostname)
             return ip
         except ValueError:
             logger.log("Caution: hostname did not return ip.")
@@ -75,10 +79,45 @@ class notifier:
             return False
 
 class updater:
-    def buildrecordset():
-        # Build dns recordset for AWS
-        return
+    def update(newip):
+        import boto3
 
-    def upsertrecordset():
-        # Send dns recordset upsert to AWS
-        return
+        # get the config values
+        zoneid = config.get('ROUTE53','zoneid')
+        comment = "this is a comment about record set updates"
+        recordset = config.get('ROUTE53','recordset')
+        type = config.get('ADVANCED','type')
+        ttl = config.getint('ADVANCED','ttl')
+
+        # build the payload
+        payload = {
+            "Comment":comment,
+            "Changes":[
+                {
+                    "Action":"UPSERT",
+                    "ResourceRecordSet":{
+                        "ResourceRecords":[
+                            {
+                                "Value":newip
+                            }
+                        ],
+                    "Name":recordset,
+                    "Type":type,
+                    "TTL":ttl
+                    }
+                }
+            ]
+        }
+
+        # make the upsert
+        r53 = boto3.client('route53')
+        response = r53.change_resource_record_sets(
+            HostedZoneId=zoneid,
+            ChangeBatch=payload
+        )
+
+        # log the result
+        logger.log(str(response))
+
+        # return the result
+        return response
