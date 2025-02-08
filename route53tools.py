@@ -34,7 +34,7 @@ class cachedip:
         except ValueError:
             return False
         
-class externalip:
+class wanip:
     def get():
         from requests import get
 
@@ -45,6 +45,24 @@ class externalip:
         except ValueError:
             return False
 
+class awsip:
+    def get():
+        import boto3
+        ip = False
+
+        r53 = boto3.client('route53')
+        response = r53.list_resource_record_sets(
+            HostedZoneId=config['ROUTE53']['zoneid'],
+            StartRecordName=config['ROUTE53']['recordset'],
+            StartRecordType='A',
+        )
+        
+        for v in response['ResourceRecordSets']:
+            if v['Name'] == config['ROUTE53']['recordset'] + '.':
+                ip = v['ResourceRecords'][0]['Value']
+
+        return ip
+                
 class dnsip:
     def get():
         import socket
@@ -79,12 +97,11 @@ class notifier:
             return False
 
 class updater:
-    def update_pending():
+    def is_update_pending():
         import boto3
         import os
 
         if os.path.exists('change.pending'):
-            print('lock exists')
             f = open('change.pending', 'r')
             id = f.read()
             f.close()
@@ -95,11 +112,9 @@ class updater:
             )
             logger.log('Change pending: ' + str(response))
             if response['ChangeInfo']['Status'] == 'INSYNC':
-                print('change complete. deleting lock')
                 os.remove('change.pending')
                 return False
             
-            print('change pending. leaving lock.')
             return True
     
     def update(newip):
@@ -149,6 +164,8 @@ class updater:
             file.close()
 
         cachedip.update(newip)
+
+        # TODO: add alert mechanism
 
         # return the result
         return response
