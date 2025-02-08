@@ -54,8 +54,8 @@ class dnsip:
         try:
             ip = socket.gethostbyname(hostname)
             return ip
-        except ValueError:
-            logger.log("Caution: hostname did not return ip.")
+        except socket.gaierror as er:
+            logger.log("Host not found: " + er.strerror)
             return False
         
 class logger:
